@@ -81,20 +81,13 @@ export async function loadModel({
   geo.scale(colliderScale, colliderScale, colliderScale);
 
   const mat = new THREE.MeshBasicMaterial({
-    color: 0xff0000,
-    wireframe: true,
-    visible: true, // debug
+    visible: false, // debug
   });
 
   const collider = new THREE.Mesh(geo, mat);
   collider.userData.isCollider = true;
   collider.userData.model = root;
 
-  root.add(collider);
-
-  collider.visible = true;
-  collider.material.visible = true;
-  console.log("collider", collider);
   root.add(collider);
   scene.add(root);
 

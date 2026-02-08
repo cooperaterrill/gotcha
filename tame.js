@@ -14,23 +14,31 @@ const wolf2x = (Math.random() - 0.5) * 20;
 const wolf2y = (Math.random() - 0.5) * 20;
 const wolf2r = Math.random() * Math.PI * 2;
 
-await loadModel({
-  url: "static/models/wolf/scene.gltf",
-  scene,
-  pos: [wolf1x, -1, wolf1y],
-  scale: 0.06,
-  rot: [0, wolf1r, 0],
-  colliderScale: 15,
-});
+let wolf1Tamed = false;
+let wolf2Tamed = false;
 
-await loadModel({
-  url: "static/models/wolf/scene.gltf",
-  scene,
-  pos: [wolf2x, -1, wolf2y],
-  scale: 0.06,
-  rot: [0, wolf2r, 0],
-  colliderScale: 15,
-});
+const wolf1collider = (
+  await loadModel({
+    url: "static/models/wolf/scene.gltf",
+    scene,
+    pos: [wolf1x, -1, wolf1y],
+    scale: 0.06,
+    rot: [0, wolf1r, 0],
+    colliderScale: 15,
+  })
+).collider;
+
+const wolf2collider = (
+  await loadModel({
+    url: "static/models/wolf/scene.gltf",
+    scene,
+    pos: [wolf2x, -1, wolf2y],
+    scale: 0.06,
+    rot: [0, wolf2r, 0],
+    colliderScale: 15,
+  })
+).collider;
+
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 raycaster.near = 0.1;
@@ -46,7 +54,19 @@ window.addEventListener("click", (e) => {
 
   for (const hit of hits) {
     if (hit.object.userData.isCollider) {
+      if (hit.object === wolf1collider) {
+        wolf1Tamed = true;
+      }
+      if (hit.object === wolf2collider) {
+        wolf2Tamed = true;
+      }
+
       console.log("Clicked model:", hit.object.userData.model);
+      if (wolf1Tamed && wolf2Tamed) {
+        setTimeout(() => {
+          window.close();
+        }, 100);
+      }
       break;
     }
   }
