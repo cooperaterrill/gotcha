@@ -1,4 +1,30 @@
 
+    // Scene setup
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x7EC0EE);
+    const camera = new THREE.PerspectiveCamera(
+        75, 
+        window.innerWidth / window.innerHeight, 
+        0.1, 
+        1000
+        );
+    camera.position.set(0, 0, 4); // Position camera back from origin
+    camera.lookAt(0, 0, 0); // Look at center
+        
+    // Renderer setup
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    document.getElementById('canvas-container').appendChild(renderer.domElement);
+        
+    // Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    scene.add(ambientLight);
+        
+    const directionalLight = new THREE.DirectionalLight(0xfffeee, 0.6);
+    directionalLight.position.set(5, 10, 5);
+    directionalLight.castShadow = true;
+    scene.add(directionalLight);
         const textureLoader = new THREE.TextureLoader();
         const groundGeo = new THREE.PlaneGeometry(50,50);
         const grassTexture = makeTexture('grass_block_top.png');
