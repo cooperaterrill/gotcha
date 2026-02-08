@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enchantment Table Mini-Game</title>
+<style>
+body {
+    margin: 0;
+    background: #7fb8d4;
+    font-family: monospace;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+h2 { margin-bottom: 20px; }
+
+.inventory {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.slot {
+    width: 64px;
+    height: 64px;
+    border: 2px solid #555;
+    background: #c6c6c6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slot img {
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+    cursor: grab;
+}
+
+#enchant-slot {
+    width: 64px;
+    height: 64px;
+    border: 2px dashed #222;
+    margin-bottom: 20px;
+}
+
+.efficiency-container {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.efficiency {
+    width: 150px;
+    height: 40px;
+    background: #c6c6c6;
+    border: 2px solid #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.efficiency.selected { background: #7CFC00; }
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#message { margin-top: 20px; font-weight: bold; }
+</style>
+</head>
+<body>
+
+<h2 id="instruction"></h2>
+
+<div class="inventory" id="inventory"></div>
+
+<div class="efficiency-container">
+    <div id="enchant-slot" class="slot"></div>
+    <div>
+        <div class="efficiency" data-level="1">Level 1</div>
+        <div class="efficiency" data-level="2">Level 2</div>
+        <div class="efficiency" data-level="3">Level 3</div>
+    </div>
+    
+</div>
+
+<button id="submitBtn">Submit</button>
+
+<div id="message"></div>
+
+<script>
+// 1️⃣ Define items
+const items = [
+    {name: "diamond_boots", src: "static/crafting_assets/diamond_boots.png"},
+    {name: "diamond_chestplate", src: "static/crafting_assets/diamond_chestplate.png"},
+    {name: "iron_pickaxe", src: "static/crafting_assets/pickaxe.png"},
+    {name: "iron_sword", src: "static/crafting_assets/iron_sword.png"},
+    {name: "diamond_sword", src: "static/crafting_assets/diamond_sword.png"},
+    {name: "diamond_chestplate", src: "static/crafting_assets/diamond_chestplate.png"},
+    {name: "diamond_axe", src: "static/crafting_assets/diamond_axe.png"},
+    {name: "bow", src: "static/crafting_assets/bow.png"}
+];
+
+// 2️⃣ Enchantments map: valid items for each enchant
+const enchantments = {
+  "Protection": ["diamond_boots", "diamond_chestplate"],
+  "Efficiency": ["iron_pickaxe",  "diamond_axe"],
+  "Sharpness": ["iron_sword", "diamond_sword"],
+};
+
+// 3️⃣ Pick a random enchant + level
+const enchantKeys = Object.keys(enchantments);
+const chosenEnchant = enchantKeys[Math.floor(Math.random() * enchantKeys.length)];
+const chosenLevel = Math.floor(Math.random()*3)+1; // 1-3
+
+document.getElementById("instruction").textContent = 
+    `Enchant with "${chosenEnchant}" level ${chosenLevel}`;
+
+// 4️⃣ Render inventory
+const inventory = document.getElementById("inventory");
+
+items.slice(0,6).forEach(item => {
+    const slot = document.createElement("div");
+    slot.className = "slot";
+
+    const img = document.createElement("img");
+    img.src = item.src;
+    img.alt = item.name;
+    img.draggable = true;
+
+    img.addEventListener("dragstart", e => {
+        e.dataTransfer.setData("text/plain", item.name);
+    });
+
+    slot.appendChild(img);
+    inventory.appendChild(slot);
+});
+
+// 5️⃣ Enchant slot
+const enchantSlot = document.getElementById("enchant-slot");
+let selectedItem = null;
+
+enchantSlot.addEventListener("dragover", e => e.preventDefault());
+enchantSlot.addEventListener("drop", e => {
+    e.preventDefault();
+    const draggedName = e.dataTransfer.getData("text");
+    if(draggedName){
+        selectedItem = draggedName;
+        enchantSlot.innerHTML = "";
+        const img = document.createElement("img");
+        img.src = items.find(i=>i.name===draggedName).src;
+        img.alt = draggedName;
+        enchantSlot.appendChild(img);
+    }
+});
+
+// 6️⃣ Level selection
+let selectedLevel = null;
+document.querySelectorAll(".efficiency").forEach(div => {
+    div.addEventListener("click", () => {
+        selectedLevel = parseInt(div.dataset.level);
+        document.querySelectorAll(".efficiency").forEach(d=>d.classList.remove("selected"));
+        div.classList.add("selected");
+    });
+});
+
+// 7️⃣ Submit check
+document.getElementById("submitBtn").addEventListener("click", () => {
+    const msg = document.getElementById("message");
+    if(selectedItem && selectedLevel){
+        // check item validity
+        if(enchantments[chosenEnchant].includes(selectedItem) && selectedLevel === chosenLevel){
+            msg.textContent = "Craftcha Passed! Thanks for playing, the window will close shortly.";
+            msg.style.color = "green";
+            setTimeout(() => {
+                    window.close();
+                }, 2000);
+        } else {
+            msg.textContent = "❌ Wrong item or level. Try again!";
+            msg.style.color = "red";
+        }
+    } else {
+        msg.textContent = "❌ Select an item and a level!";
+        msg.style.color = "red";
+    }
+});
+</script>
+
+</body>
+</html>

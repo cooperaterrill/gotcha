@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drag to Arrange Items</title>
+<style>
+body {
+    margin: 0;
+    background: #7fb8d4;
+    font-family: monospace;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+.inventory {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.slot {
+    width: 64px;
+    height: 64px;
+    border: 2px solid #555;
+    background: #c6c6c6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slot img {
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+    cursor: grab;
+}
+
+#submitBtn {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#message {
+    margin-top: 20px;
+    font-weight: bold;
+}
+</style>
+</head>
+<body>
+
+<h2 id="instruction"></h2>
+
+<div class="inventory" id="inventory"></div>
+
+<button id="submitBtn">Submit</button>
+
+<div id="message"></div>
+
+<script>
+// 1️⃣ Define all items
+const items = [
+    {name: "iron", src: "static/crafting_assets/iron.png"},
+    {name: "stick", src: "static/crafting_assets/stick.png"},
+    {name: "dirt", src: "static/crafting_assets/dirt.png"},
+    {name: "bow", src: "static/crafting_assets/bow.png"},
+    {name: "pickaxe", src: "static/crafting_assets/pickaxe.png"},
+    {name: "zombie", src: "static/crafting_assets/zombie.png"},
+    {name: "diamond boots", src: "static/crafting_assets/diamond_boots.png"},
+    {name: "iron boots", src: "static/crafting_assets/iron-boots.png"},
+    {name: "diamond_chestplate", src: "static/crafting_assets/diamond_chestplate.png"},
+    {name: "iron_pickaxe", src: "static/crafting_assets/pickaxe.png"},
+    {name: "iron sword", src: "static/crafting_assets/iron_sword.png"},
+    {name: "diamond sword", src: "static/crafting_assets/diamond_sword.png"},
+    {name: "diamond chestplate", src: "static/crafting_assets/diamond_chestplate.png"},
+    {name: "diamond axe", src: "static/crafting_assets/diamond_axe.png"}
+];
+
+// 2️⃣ Pick a random target order (4 items)
+function getRandomOrder() {
+    const shuffled = [...items].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, 5).map(i => i.name);
+}
+
+let targetOrder = getRandomOrder();
+document.getElementById("instruction").textContent =
+    "Arrange in this order: " + targetOrder.join(", ");
+
+// 3️⃣ Display items in random order
+let currentItems = [...targetOrder].sort(() => Math.random() - 0.5);
+const inventory = document.getElementById("inventory");
+
+function renderInventory() {
+    inventory.innerHTML = "";
+    currentItems.forEach((itemName, index) => {
+        const itemData = items.find(i => i.name === itemName);
+        const slot = document.createElement("div");
+        slot.className = "slot";
+        slot.dataset.index = index;
+
+        const img = document.createElement("img");
+        img.src = itemData.src;
+        img.alt = itemName;
+        img.draggable = true;
+
+        // Drag start
+        img.addEventListener("dragstart", e => {
+            e.dataTransfer.setData("text/plain", index);
+        });
+
+        // Drag over
+        slot.addEventListener("dragover", e => e.preventDefault());
+
+        // Drop
+        slot.addEventListener("drop", e => {
+            e.preventDefault();
+            const draggedIndex = e.dataTransfer.getData("text");
+            if (draggedIndex === null) return;
+
+            // Swap dragged item with drop target
+            [currentItems[draggedIndex], currentItems[index]] =
+                [currentItems[index], currentItems[draggedIndex]];
+            renderInventory();
+        });
+
+        slot.appendChild(img);
+        inventory.appendChild(slot);
+    });
+}
+
+renderInventory();
+
+// 4️⃣ Submit button
+document.getElementById("submitBtn").addEventListener("click", () => {
+    const correct = currentItems.every((item, i) => item === targetOrder[i]);
+    const msg = document.getElementById("message");
+    if (correct) {
+        msg.textContent = "Craftcha Passed! Thanks for playing, the window will close shortly.";
+        msg.style.color = "green";
+        setTimeout(() => {
+                    window.close();
+                }, 2000);
+    } else {
+        msg.textContent = "❌ Wrong order. Try again!";
+        msg.style.color = "red";
+    }
+});
+</script>
+
+</body>
+</html>
