@@ -100,18 +100,20 @@ button {
 
 <script>
 function triggerJumpscare() {
-    const overlay = document.createElement("div");
-    overlay.style.cssText = "position:fixed;inset:0;z-index:9999;background:#000;display:flex;align-items:center;justify-content:center;";
-    const video = document.createElement("video");
-    video.src = "/static/herobrine.mp4";
-    video.autoplay = true;
-    video.playsInline = true;
-    video.style.cssText = "max-width:100vw;max-height:100vh;";
-    overlay.appendChild(video);
-    document.body.appendChild(overlay);
-    video.play().catch(() => {});
-    video.addEventListener("ended", () => window.close());
-    setTimeout(() => window.close(), 10000);
+    setTimeout(() => {
+        const overlay = document.createElement("div");
+        overlay.style.cssText = "position:fixed;inset:0;z-index:9999;background:#000;display:flex;align-items:center;justify-content:center;";
+        const video = document.createElement("video");
+        video.src = "/static/herobrine.mp4";
+        video.autoplay = true;
+        video.playsInline = true;
+        video.style.cssText = "width:100vw;height:100vh;object-fit:cover;";
+        overlay.appendChild(video);
+        document.body.appendChild(overlay);
+        video.play().catch(() => {});
+        video.addEventListener("ended", () => window.close());
+        setTimeout(() => window.close(), 10000);
+    }, 2000);
 }
 
 // 1️⃣ Define items
@@ -197,10 +199,13 @@ document.getElementById("submitBtn").addEventListener("click", () => {
         if(enchantments[chosenEnchant].includes(selectedItem) && selectedLevel === chosenLevel){
             msg.textContent = "Craftcha Passed! Thanks for playing, the window will close shortly.";
             msg.style.color = "green";
+            window.opener.postMessage({ type: "CRAFTCHA_PASS" }, "*");
             setTimeout(() => {
                     window.close();
                 }, 2000);
         } else {
+            msg.textContent = "Wrong! That's not the right enchantment.";
+            msg.style.color = "red";
             triggerJumpscare();
         }
     } else {
