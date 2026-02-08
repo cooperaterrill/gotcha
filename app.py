@@ -26,6 +26,10 @@ def enchantment():
 def craft():
     return send_from_directory(".", "craft.html")
 
+@app.route("/nameblock")
+def nameblock():
+    return send_from_directory(".", "nameblock.html")
+
 @app.route("/pick")
 def pick():
     return send_from_directory(".", "pick.html")
