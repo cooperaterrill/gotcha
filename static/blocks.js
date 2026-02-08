@@ -1,17 +1,29 @@
-        const textureLoader = THREE.TextureLoader();
-        const logtext = textureLoader.load('/textures/oak_log.png');
-        const log = new THREE.MeshStandardMaterial({
+
+        const textureLoader = new THREE.TextureLoader();
+        function makeTexture(path) {
+            const texture = textureLoader.load(`/textures/${path}`);
+            texture.anisotropy = 1;
+            texture.magFilter = THREE.NearestFilter;
+            texture.minFilter = THREE.NearestFilter;
+            texture.generateMipmaps = false;
+            return texture
+        }
+        const logtext = makeTexture('oak_log.png');
+        const log = new THREE.MeshLambertMaterial({
             map: logtext
         });
-        const stonetext = textureLoader.load('/textures/stone.png');
-        const stone = new THREE.MeshStandardMaterial({
+        const stonetext = makeTexture('stone.png');
+        const stone = new THREE.MeshLambertMaterial({
             map: stonetext
         });
-        const dirttext = textureLoader.load('/textures/dirt.png');
-        const dirt = new THREE.MeshStandardMaterial({
+        const dirttext = makeTexture('dirt.png');
+        const dirt = new THREE.MeshLambertMaterial({
             map: dirttext
         });
-        function createTexture(color, size = 16, block = 'none') {
+        const block_ids = new Map([[0, "log"], [1, "stone"], [2, "dirt"]]);
+        const block_ids_to_mesh = new Map([[0, log], [1, stone], [2, dirt]]);
+
+        function createTexture(color, size = 16) {
             const canvas = document.createElement('canvas');
             canvas.width = canvas.height = size;
             const ctx = canvas.getContext('2d');
@@ -42,4 +54,13 @@
             block.userData.color = colorName;
             return block;
         }
-        function createTextureBlock(texture, )
+        function createTextureBlock(material, x, y, z) {
+            const geometry = new THREE.BoxGeometry(1, 1, 1);
+            const block = new THREE.Mesh(geometry, material);
+            const edges = new THREE.EdgesGeometry(geometry);
+            const wireframe = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x000000 }));
+            block.add(wireframe);
+            
+            block.position.set(x, y, z);
+            return block;
+        }
