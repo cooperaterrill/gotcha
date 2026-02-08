@@ -34,6 +34,10 @@ def pick():
 def arrange():
     return send_from_directory(".", "arrange.html")
 
+@app.route("/tame")
+def tame():
+    return send_from_directory(".", "tame.html")
+
 @app.route("/styles.css")
 def styles():
     return send_from_directory(".", "styles.css")
@@ -50,6 +54,10 @@ def blocksJS():
 @app.route("/bow.js")
 def bowJS():
     return send_from_directory(".", "bow.js")
+
+@app.route("/tame.js")
+def tameJS():
+    return send_from_directory(".", "tame.js")
 
 @app.route('/textures/<path:filename>')
 def textures(filename):
