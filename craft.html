@@ -9,11 +9,15 @@
     <style>
         body {
             margin: 0;
-            background: #7fb8d4;
+            padding: 20px;
+            background: #D1D0D1;
             font-family: monospace;
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            box-sizing: border-box;
         }
 
         /* Crafting area */
@@ -50,7 +54,7 @@
         /* Inventory */
         .inventory {
             display: grid;
-            grid-template-columns: repeat(9, 64px);
+            grid-template-columns: repeat(8, 64px);
             gap: 6px;
             margin-top: 40px;
         }
@@ -68,7 +72,7 @@
 
 <body>
 
-    <h1>Make an axe</h1>
+    <h1>Make a pickaxe</h1>
 
     <div class="crafting-container">
         <div class="grid" id="craftingGrid"></div>
