@@ -26,6 +26,10 @@ def enchantment():
 def craft():
     return send_from_directory(".", "craft.html")
 
+@app.route("/nameblock")
+def nameblock():
+    return send_from_directory(".", "nameblock.html")
+
 @app.route("/pick")
 def pick():
     return send_from_directory(".", "pick.html")
@@ -33,6 +37,10 @@ def pick():
 @app.route("/arrange")
 def arrange():
     return send_from_directory(".", "arrange.html")
+
+@app.route("/smelt")
+def smelt():
+    return send_from_directory(".", "smelt.html")
 
 @app.route("/tame")
 def tame():

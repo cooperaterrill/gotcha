@@ -13,18 +13,52 @@ export function makeTexture(path) {
 }
 
 export function createMaterials() {
+  const logtext = makeTexture('oak_log.png');
   const log = new THREE.MeshLambertMaterial({
-    map: makeTexture("oak_log.png"),
+    map: logtext,
   });
+  const stonetext = makeTexture('stone.png');
   const stone = new THREE.MeshLambertMaterial({
-    map: makeTexture("stone.png"),
+    map: stonetext,
   });
-  const dirt = new THREE.MeshLambertMaterial({ map: makeTexture("dirt.png") });
+  const dirttext = makeTexture('dirt.png');
+  const dirt = new THREE.MeshLambertMaterial({
+    map: dirttext,
+  });
+  const cobbletext = makeTexture('cobblestone.png');
+  const cobble = new THREE.MeshLambertMaterial({
+    map: cobbletext
+  });
 
-  return new Map([
-    [0, { material: log, name: "log_block" }],
-    [1, { material: stone, name: "stone_block" }],
-    [2, { material: dirt, name: "dirt_block" }],
+  const diamondtext = makeTexture('diamond_ore.png');
+  const diamond = new THREE.MeshLambertMaterial({
+    map: diamondtext
+  });
+
+  const goldtext = makeTexture('gold_ore.png');
+  const gold = new THREE.MeshLambertMaterial({
+    map: goldtext
+  });
+
+  const irontext = makeTexture('iron_ore.png');
+  const iron = new THREE.MeshLambertMaterial({
+    map: irontext
+  });
+
+  const plankstext = makeTexture('oak_planks.png');
+  const planks = new THREE.MeshLambertMaterial({
+    map: plankstext
+  });
+
+  const block_ids_to_mesh = new Map([
+    [0, {material: log, name: "log_block"}], 
+    [1, {material: stone, name: "stone_block"}], 
+    [2, {material: dirt, name: "dirt_block"}],
+    [3, {material: cobble, name: "cobble_block"}],
+    [4, {material: diamond, name: "diamond_ore_block"}],
+    [5, {material: gold, name: "gold_ore_block"}],
+    [6, {material: iron, name: "iron_ore_block"}],
+    [7, {material: planks, name: "planks_block"}]
   ]);
 }
 
