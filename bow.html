@@ -30,9 +30,20 @@
   <body>
     <div id="background" class="background"></div>
 
-    <div class="content">Shoot the mob!</div>
-    <div id="answer-status" class="content"></div>
-
+    <div
+      id="overlay-text"
+      style="
+        position: absolute;
+        top: 20px; /* distance from top */
+        left: 20px; /* distance from left */
+        color: white; /* text color */
+        font-size: 24px;
+        font-family: Arial, sans-serif;
+        pointer-events: none; /* clicks pass through */
+      "
+    >
+      Shoot the mob!!
+    </div>
     <script src="bow.js"></script>
   </body>
 </html>

@@ -48,6 +48,25 @@ const imagePath = `./static/bow_situations/${situationToFilename[situation]}.png
 const image = new Image();
 image.src = imagePath;
 
+function triggerJumpscare() {
+  setTimeout(() => {
+    const overlay = document.createElement("div");
+    console.log(overlay);
+    overlay.style.cssText =
+      "position:fixed;inset:0;z-index:9999;background:#000;display:flex;align-items:center;justify-content:center;";
+    const video = document.createElement("video");
+    video.src = "/static/herobrine.mp4";
+    video.autoplay = true;
+    video.playsInline = true;
+    video.style.cssText = "width:100vw;height:100vh;object-fit:cover;";
+    overlay.appendChild(video);
+    document.body.appendChild(overlay);
+    video.play().catch(() => {});
+    video.addEventListener("ended", () => window.close());
+    setTimeout(() => window.close(), 10000);
+  }, 2000);
+}
+
 function checkCorrectClick(e) {
   const r = document.getElementById("background").getBoundingClientRect();
 
@@ -83,10 +102,24 @@ function checkCorrectClick(e) {
     ny <= rect.y + rect.h;
 
   if (hit) {
-    document.getElementById("answer-status").innerText = "GOOD JOB MAN WOW";
+    document.getElementById("overlay-text").style = document.getElementById(
+      "overlay-text",
+    ).style =
+      "position: absolute; top: 20px; left: 20px; color: white; font-size: 24px; font-family: Arial, sans-serif; pointer-events: none; color: green;";
+    document.getElementById("overlay-text").textContent =
+      "Craftcha Passed! Thanks for playing, the window will close shortly.";
+    window.opener.postMessage({ type: "CRAFTCHA_PASS" }, "*");
+    setTimeout(() => {
+      window.close();
+    }, 2000);
   } else {
-    document.getElementById("answer-status").innerText =
-      "YOU FOOL. YOU ABSOLUTE BUFFOON.";
+    document.getElementById("overlay-text").style = document.getElementById(
+      "overlay-text",
+    ).style =
+      "position: absolute; top: 20px; left: 20px; color: white; font-size: 24px; font-family: Arial, sans-serif; pointer-events: none; color: red;";
+    document.getElementById("overlay-text").textContent =
+      "You missed! Remember to account for the effect of gravity!";
+    triggerJumpscare();
   }
 }
 

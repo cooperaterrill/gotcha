@@ -17,6 +17,7 @@
         "nameblock",
         "smelt",
         "tame",
+        "bow",
       ];
 
       let currentPopup = null;
@@ -50,14 +51,6 @@
           // Optional: close popup if still open
           if (currentPopup && !currentPopup.closed) currentPopup.close();
           currentPopup = null;
-        }
-
-        if (event.data.type === "CRAFTCHA_FAIL") {
-          alert("Try again!");
-          // Reroll popup
-          if (currentPopup && !currentPopup.closed) currentPopup.close();
-          currentPopup = null;
-          openCaptcha();
         }
       });
     </script>
