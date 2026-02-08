@@ -8,20 +8,6 @@
             texture.generateMipmaps = false;
             return texture
         }
-        const logtext = makeTexture('oak_log.png');
-        const log = new THREE.MeshLambertMaterial({
-            map: logtext
-        });
-        const stonetext = makeTexture('stone.png');
-        const stone = new THREE.MeshLambertMaterial({
-            map: stonetext
-        });
-        const dirttext = makeTexture('dirt.png');
-        const dirt = new THREE.MeshLambertMaterial({
-            map: dirttext
-        });
-        const block_ids = new Map([[0, "log"], [1, "stone"], [2, "dirt"]]);
-        const block_ids_to_mesh = new Map([[0, log], [1, stone], [2, dirt]]);
 
         function createTexture(color, size = 16) {
             const canvas = document.createElement('canvas');
@@ -64,3 +50,19 @@
             block.position.set(x, y, z);
             return block;
         }
+        const groundGeo = new THREE.PlaneGeometry(50,50);
+        const grassTexture = textureLoader.makeTexture('grass_block_top.png');
+        const logtext = makeTexture('oak_log.png');
+        const log = new THREE.MeshLambertMaterial({
+            map: logtext
+        });
+        const stonetext = makeTexture('stone.png');
+        const stone = new THREE.MeshLambertMaterial({
+            map: stonetext
+        });
+        const dirttext = makeTexture('dirt.png');
+        const dirt = new THREE.MeshLambertMaterial({
+            map: dirttext
+        });
+        const block_ids = new Map([[0, "log"], [1, "stone"], [2, "dirt"]]);
+        const block_ids_to_mesh = new Map([[0, log], [1, stone], [2, dirt]]);

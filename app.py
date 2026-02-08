@@ -32,5 +32,6 @@ def bowJS():
 @app.route('/textures/<path:filename>')
 def textures(filename):
     return send_from_directory('.', f'./static/textures/{filename}')
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
