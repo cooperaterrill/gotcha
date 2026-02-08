@@ -3,8 +3,13 @@
   <head></head>
   <body>
     <div id="canvas-container" style="cursor: none"></div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="blocks.js"></script>
-    <script src="tame.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+        }
+      }
+    </script>
+    <script src="tame.js" type="module"></script>
   </body>
 </html>
