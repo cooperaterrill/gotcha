@@ -63,6 +63,19 @@ def bowJS():
 def tameJS():
     return send_from_directory(".", "tame.js")
 
+@app.route("/renderer.js")
+def rendererJS():
+    return send_from_directory(".", "renderer.js")
+
+    
+@app.route("/textures.js")
+def texturesJS():
+    return send_from_directory(".", "textures.js")
+
+@app.route("/input.js")
+def inputJS():
+    return send_from_directory(".", "input.js")
+
 @app.route('/textures/<path:filename>')
 def textures(filename):
     return send_from_directory('.', f'./static/textures/{filename}')
