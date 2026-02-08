@@ -65,6 +65,21 @@ h2 {
 <div id="message"></div>
 
 <script>
+function triggerJumpscare() {
+    const overlay = document.createElement("div");
+    overlay.style.cssText = "position:fixed;inset:0;z-index:9999;background:#000;display:flex;align-items:center;justify-content:center;";
+    const video = document.createElement("video");
+    video.src = "/static/herobrine.mp4";
+    video.autoplay = true;
+    video.playsInline = true;
+    video.style.cssText = "max-width:100vw;max-height:100vh;";
+    overlay.appendChild(video);
+    document.body.appendChild(overlay);
+    video.play().catch(() => {});
+    video.addEventListener("ended", () => window.close());
+    setTimeout(() => window.close(), 10000);
+}
+
 // 1️⃣ Define all items
 const items = [
     {name: "iron", src: "static/crafting_assets/iron.png"},
@@ -148,8 +163,7 @@ document.getElementById("submitBtn").addEventListener("click", () => {
                     window.close();
                 }, 2000);
     } else {
-        msg.textContent = "❌ Wrong order. Try again!";
-        msg.style.color = "red";
+        triggerJumpscare();
     }
 });
 </script>
