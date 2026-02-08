@@ -15,5 +15,8 @@ def block_break():
 def blocks():
     return send_from_directory('.', './static/blocks.js')
 
+@app.route('/crafting.js')
+def crafting():
+    return send_from_directory('.', './static/crafting.js')
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

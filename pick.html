@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pick the Item</title>
+<style>
+body {
+    margin: 0;
+    background: #7fb8d4;
+    font-family: monospace;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+.inventory {
+    display: grid;
+    grid-template-columns: repeat(5, 64px);
+    gap: 10px;
+}
+
+.slot {
+    width: 64px;
+    height: 64px;
+    border: 2px solid #555;
+    background: #c6c6c6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.slot img {
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+}
+
+#message {
+    margin-top: 20px;
+    font-weight: bold;
+}
+</style>
+</head>
+<body>
+
+<h2 id="instruction"></h2>
+
+<div class="inventory" id="inventory"></div>
+
+<div id="message"></div>
+
+<script>
+// All assets we have
+const items = [
+    {name: "iron", src: "static/crafting_assets/iron.png"},
+    {name: "stick", src: "static/crafting_assets/stick.png"},
+    {name: "dirt", src: "static/crafting_assets/dirt.png"},
+    {name: "pickaxe", src: "static/crafting_assets/pickaxe.png"},
+    {name: "bow", src: "static/crafting_assets/bow.png"},
+    {name: "diamond boots", src: "static/crafting_assets/diamond_boots.png"},
+    {name: "diamond chestplate", src: "static/crafting_assets/diamond_chestplate.png"},
+    {name: "iron pickaxe", src: "static/crafting_assets/pickaxe.png"},
+    {name: "iron sword", src: "static/crafting_assets/iron_sword.png"},
+    {name: "diamond sword", src: "static/crafting_assets/diamond_sword.png"},
+    {name: "diamond axe", src: "static/crafting_assets/diamond_axe.png"},
+    {name: "zombie", src: "static/crafting_assets/zombie.png"}
+];
+
+// 1️⃣ Pick 5 random items from the full inventory
+function pickRandomItems(arr, count){
+    const shuffled = [...arr].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, count);
+}
+
+const displayItems = pickRandomItems(items, 5);
+
+// 2️⃣ Pick a target from those 5 items
+const target = displayItems[Math.floor(Math.random() * displayItems.length)];
+document.getElementById("instruction").textContent = `Pick the ${target.name}`;
+
+// 3️⃣ Render the 5 items
+const inventory = document.getElementById("inventory");
+displayItems.forEach(item => {
+    const slot = document.createElement("div");
+    slot.className = "slot";
+    
+    const img = document.createElement("img");
+    img.src = item.src;
+    img.alt = item.name;
+    slot.appendChild(img);
+
+    slot.addEventListener("click", () => {
+        const message = document.getElementById("message");
+        if(item.name === target.name){
+            message.textContent = "Craftcha Passed! Thanks for playing, the window will close shortly.";
+            message.style.color = "green";
+            setTimeout(() => {
+                window.close();
+            }, 2000);
+        } else {
+            message.textContent = "❌ Try again!";
+            message.style.color = "red";
+        }
+    });
+
+    inventory.appendChild(slot);
+});
+</script>
+
+</body>
+</html>

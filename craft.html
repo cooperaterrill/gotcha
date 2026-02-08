@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Crafting</title>
+
+    <style>
+        body {
+            margin: 0;
+            background: #7fb8d4;
+            font-family: monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Crafting area */
+        .crafting-container {
+            display: flex;
+            gap: 30px;
+            margin-top: 40px;
+            align-items: center;
+        }
+
+        /* 3x3 grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 64px);
+            grid-template-rows: repeat(3, 64px);
+            gap: 6px;
+        }
+
+        /* Output slot */
+        .output {
+            width: 64px;
+            height: 64px;
+        }
+
+        /* Slots */
+        .slot {
+            width: 64px;
+            height: 64px;
+            background: #c6c6c6;
+            border: 3px solid #8b8b8b;
+            box-sizing: border-box;
+        }
+
+        /* Inventory */
+        .inventory {
+            display: grid;
+            grid-template-columns: repeat(9, 64px);
+            gap: 6px;
+            margin-top: 40px;
+        }
+
+        /* Item images */
+        .slot img {
+            width: 100%;
+            height: 100%;
+            image-rendering: pixelated;
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <h1>Make an axe</h1>
+
+    <div class="crafting-container">
+        <div class="grid" id="craftingGrid"></div>
+        <div class="slot output" id="outputSlot"></div>
+    </div>
+    <div id="message"></div> 
+    <div class="inventory" id="inventory"></div>
+
+    <script>
+        // Create slots
+        function createSlots(container, count) {
+            for (let i = 0; i < count; i++) {
+                const slot = document.createElement("div");
+                slot.className = "slot";
+                container.appendChild(slot);
+            }
+        }
+
+        // Initialize grids
+        createSlots(document.getElementById("craftingGrid"), 9);
+        createSlots(document.getElementById("inventory"), 8);
+
+        // Add starter items
+        function addItem(slotIndex, src) {
+            const img = document.createElement("img");
+            img.src = src;
+            img.draggable = true;
+            img.className = "item";
+            document.getElementById("inventory").children[slotIndex].appendChild(img);
+        }
+
+        addItem(0, "static/crafting_assets/iron.png");
+        addItem(1, "static/crafting_assets/stick.png");
+        addItem(2, "static/crafting_assets/iron.png");
+        addItem(3, "static/crafting_assets/iron.png");
+        addItem(4, "static/crafting_assets/stick.png");
+        addItem(5, "static/crafting_assets/iron.png");
+        addItem(6, "static/crafting_assets/stick.png");
+        addItem(7, "static/crafting_assets/stick.png");
+
+
+        let draggedItem = null;
+
+        document.addEventListener("dragstart", e => {
+            if (e.target.tagName === "IMG") {
+                draggedItem = e.target;
+            }
+        });
+
+        document.addEventListener("dragover", e => {
+            if (e.target.classList.contains("slot")) {
+                e.preventDefault();
+            }
+        });
+
+        document.addEventListener("drop", e => {
+            if (!e.target.classList.contains("slot")) return;
+            e.preventDefault();
+
+            if (!e.target.querySelector("img")) {
+                e.target.appendChild(draggedItem);
+                checkRecipe();
+            }
+        });
+
+
+        const grid = document.getElementById("craftingGrid");
+        const output = document.getElementById("outputSlot");
+        const msg = document.getElementById("message");
+        function checkRecipe() {
+            const slots = [...grid.children].map(slot =>
+                slot.querySelector("img")?.src.split("/").pop() || null
+            );
+
+            const axe =
+                slots[0] === "iron.png" &&
+                slots[1] === "iron.png" &&
+                slots[2] === "iron.png" &&
+                slots[4] === "stick.png" &&
+                slots[7] === "stick.png";
+
+            output.innerHTML = "";
+
+            if (axe) {
+                const img = document.createElement("img");
+                img.src = "static/crafting_assets/pickaxe.png";
+                img.draggable = true;
+
+                img.addEventListener("dragstart", () => {
+                    // consume ingredients
+                    [1, 4, 7].forEach(i => grid.children[i].innerHTML = "");
+                });
+
+                output.appendChild(img);
+                msg.textContent = "Craftcha Passed! Thanks for playing, the window will close shortly.";
+                msg.style.color = "green";
+                window.opener.postMessage({ type: "CRAFTCHA_PASS" }, "*");
+                    setTimeout(() => {
+                        window.close();
+                    }, 500); // small delay to ensure message is sent
+
+            }
+
+            // Re-check after every drop
+            document.querySelectorAll(".slot").forEach(slot => {
+                slot.addEventListener("drop", checkRecipe);
+            });
+        }
+    </script>
+
+
+</body>
+
+</html>
