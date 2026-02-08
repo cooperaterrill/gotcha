@@ -43,6 +43,11 @@
         margin-top: 15px;
         font-weight: bold;
     }
+    .prompt {
+        padding: 10px;
+        font-size: 16px;
+        font-style: italic;
+    }
 </style>
 </head>
 <body>
@@ -51,7 +56,7 @@
 
 <div id="block-container">
     <img id="blockImage" src="" alt="Block to Name" draggable="false">
-    <label for="blockname">Dear wanderer, what is this called?</label>
+    <label class="prompt" for="blockname">Dear wanderer, what is this called? (e.g., diamond_block)</label>
     <input type="text" id="blockname" name="blockname">
     <button id="submitBtn">Submit</button>
 </div>
@@ -67,8 +72,8 @@ const blocks = [
     "emerald_block",
     "redstone_block",
     "wood_block",
-    "dirt",
-    "sand"
+    "dirt_block",
+    "sand_block"
 ];
 
 // 2️⃣ Pick a random block for this challenge
