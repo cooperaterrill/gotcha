@@ -1,8 +1,33 @@
 <!doctype html>
 <html lang="en">
   <head></head>
-  <body>
-    <div id="canvas-container" style="cursor: none"></div>
+  <body style="margin: 0">
+    <div id="canvas-container" style="cursor: none; margin: 0">
+      <img
+        src="./static/misc/crosshair.png"
+        style="
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          pointer-events: none;
+          width: 32px; /* optional size */
+          height: 32px;
+        "
+      />
+      <img
+        src="./static/crafting_assets/bone.png"
+        style="
+          position: absolute;
+          top: 50%;
+          left: 62%;
+          pointer-events: none;
+          transform: rotate(-10deg);
+          height: 60%;
+          width: auto;
+        "
+      />
+    </div>
     <script type="importmap">
       {
         "imports": {

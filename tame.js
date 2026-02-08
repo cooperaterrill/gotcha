@@ -1,16 +1,61 @@
-import { createRenderer, startRenderLoop } from "./renderer.js";
+import { createRenderer, startRenderLoop, loadModel } from "./renderer.js";
 import { createGround, createMaterials } from "./textures.js";
-import { createTextureBlock } from "./blocks.js";
 import { attachFPSControls } from "./input.js";
+import * as THREE from "three";
 
 const { scene, camera, renderer } = createRenderer("canvas-container");
 
 scene.add(createGround());
 
-const materials = createMaterials();
-scene.add(createTextureBlock(materials.get(0).material, 0, 0, 0, 0));
-scene.add(createTextureBlock(materials.get(1).material, 1, 1, 0, 0));
+const wolf1x = (Math.random() - 0.5) * 20;
+const wolf1y = (Math.random() - 0.5) * 20;
+const wolf1r = Math.random() * Math.PI * 2;
+const wolf2x = (Math.random() - 0.5) * 20;
+const wolf2y = (Math.random() - 0.5) * 20;
+const wolf2r = Math.random() * Math.PI * 2;
 
-const update = attachFPSControls(camera);
+await loadModel({
+  url: "static/models/wolf/scene.gltf",
+  scene,
+  pos: [wolf1x, -1, wolf1y],
+  scale: 0.06,
+  rot: [0, wolf1r, 0],
+  colliderScale: 15,
+});
+
+await loadModel({
+  url: "static/models/wolf/scene.gltf",
+  scene,
+  pos: [wolf2x, -1, wolf2y],
+  scale: 0.06,
+  rot: [0, wolf2r, 0],
+  colliderScale: 15,
+});
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+raycaster.near = 0.1;
+raycaster.far = 100;
+
+window.addEventListener("click", (e) => {
+  const rect = renderer.domElement.getBoundingClientRect();
+  mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+  mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+  raycaster.setFromCamera(mouse, camera);
+
+  const hits = raycaster.intersectObjects(scene.children, true);
+
+  for (const hit of hits) {
+    if (hit.object.userData.isCollider) {
+      console.log("Clicked model:", hit.object.userData.model);
+      break;
+    }
+  }
+});
+
+//const materials = createMaterials();
+//scene.add(createTextureBlock(materials.get(0).material, 0, 0, 0, 0));
+//scene.add(createTextureBlock(materials.get(1).material, 1, 1, 0, 0));
+
+const update = attachFPSControls(camera, renderer);
 
 startRenderLoop({ scene, camera, renderer, update });

@@ -1,5 +1,6 @@
 // renderer.js
 import * as THREE from "three";
+import { GLTFLoader } from "https://unpkg.com/three@0.160.0/examples/jsm/loaders/GLTFLoader.js";
 
 export function createRenderer(containerId) {
   const scene = new THREE.Scene();
@@ -34,6 +35,70 @@ export function createRenderer(containerId) {
   });
 
   return { scene, camera, renderer };
+}
+
+/*
+ *
+ * EXAMPLE:
+ * await loadModel({
+  url: "static/models/zombie/scene.gltf",
+  scene,
+  pos: [5, -0.6, -3],
+  scale: 0.06,
+  rot: [0, Math.PI / 2, 0],
+});
+ */
+export async function loadModel({
+  url,
+  scene,
+  pos = [0, 0, 0],
+  scale = 1,
+  rot = [0, 0, 0],
+  colliderScale = 1,
+}) {
+  const loader = new GLTFLoader();
+  const { scene: root } = await loader.loadAsync(url);
+
+  /* ---- transforms ---- */
+  root.position.set(...pos);
+  root.rotation.set(...rot);
+
+  if (typeof scale === "number") root.scale.setScalar(scale);
+  else root.scale.set(...scale);
+
+  root.updateMatrixWorld(true);
+  const box = new THREE.Box3().setFromObject(root); // world-space bounds
+  const size = new THREE.Vector3();
+  const center = new THREE.Vector3();
+  box.getSize(size);
+  box.getCenter(center);
+
+  // convert world center to model's local space
+  root.worldToLocal(center);
+
+  const geo = new THREE.BoxGeometry(size.x, size.y, size.z);
+  geo.translate(center.x, center.y, center.z); // bake center into geometry
+  geo.scale(colliderScale, colliderScale, colliderScale);
+
+  const mat = new THREE.MeshBasicMaterial({
+    color: 0xff0000,
+    wireframe: true,
+    visible: true, // debug
+  });
+
+  const collider = new THREE.Mesh(geo, mat);
+  collider.userData.isCollider = true;
+  collider.userData.model = root;
+
+  root.add(collider);
+
+  collider.visible = true;
+  collider.material.visible = true;
+  console.log("collider", collider);
+  root.add(collider);
+  scene.add(root);
+
+  return { object: root, collider };
 }
 
 export function startRenderLoop({ scene, camera, renderer, update }) {
