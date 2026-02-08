@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Name the Block</title>
+<style>
+    body {
+        margin: 0;
+        background: #d1d0d1;
+        font-family: monospace;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+    }
+    h1 {
+        margin-bottom: 20px;
+    }
+    #block-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    #block-container img {
+        width: 128px;
+        height: 128px;
+        image-rendering: pixelated;
+        margin-bottom: 10px;
+    }
+    input {
+        padding: 5px;
+        font-size: 16px;
+    }
+    button {
+        margin-top: 10px;
+        padding: 8px 16px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    #message {
+        margin-top: 15px;
+        font-weight: bold;
+    }
+</style>
+</head>
+<body>
+
+<h1>Name the Block</h1>
+
+<div id="block-container">
+    <img id="blockImage" src="" alt="Block to Name" draggable="false">
+    <label for="blockname">Dear wanderer, what is this called?</label>
+    <input type="text" id="blockname" name="blockname">
+    <button id="submitBtn">Submit</button>
+</div>
+
+<div id="message"></div>
+
+<script>
+// 1️⃣ List of possible blocks
+const blocks = [
+    "diamond_block",
+    "iron_block",
+    "gold_block",
+    "emerald_block",
+    "redstone_block",
+    "wood_block",
+    "dirt",
+    "sand"
+];
+
+// 2️⃣ Pick a random block for this challenge
+const chosenBlock = blocks[Math.floor(Math.random() * blocks.length)];
+
+// 3️⃣ Set the image
+const blockImage = document.getElementById("blockImage");
+blockImage.src = `static/crafting_assets/${chosenBlock}.png`;
+blockImage.alt = chosenBlock;
+
+// 4️⃣ Handle submission
+const input = document.getElementById("blockname");
+const submitBtn = document.getElementById("submitBtn");
+const msg = document.getElementById("message");
+
+submitBtn.addEventListener("click", () => {
+    const answer = input.value.trim().toLowerCase();
+    
+    if(answer === chosenBlock){
+        msg.textContent = "Craftcha Passed! Thanks for playing, the window will close shortly.";
+        msg.style.color = "green";
+        window.opener.postMessage({ type: "CRAFTCHA_PASS" }, "*");
+        setTimeout(() => {
+                        window.close();
+                    }, 2000);
+
+    } else {
+        msg.textContent = "❌ Incorrect, try again!";
+        msg.style.color = "red";
+    }
+});
+
+// Optional: allow pressing Enter key to submit
+input.addEventListener("keydown", e => {
+    if(e.key === "Enter") submitBtn.click();
+});
+</script>
+
+</body>
+</html>
