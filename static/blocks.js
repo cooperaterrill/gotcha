@@ -29,7 +29,7 @@
             return tex;
         }
         
-        function createBlock(colorName, x, y, z) {
+        function createColorBlock(colorName, x, y, z) {
             const geometry = new THREE.BoxGeometry(1, 1, 1);
             const material = new THREE.MeshLambertMaterial({ map: createTexture(colors[colorName]) });
             const block = new THREE.Mesh(geometry, material);
@@ -42,3 +42,4 @@
             block.userData.color = colorName;
             return block;
         }
+        function createTextureBlock(texture, )
