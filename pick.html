@@ -118,6 +118,7 @@ displayItems.forEach(item => {
         if(item.name === target.name){
             message.textContent = "Craftcha Passed! Thanks for playing, the window will close shortly.";
             message.style.color = "green";
+            window.opener.postMessage({ type: "CRAFTCHA_PASS" }, "*");
             setTimeout(() => {
                 window.close();
             }, 2000);

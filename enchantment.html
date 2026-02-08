@@ -199,6 +199,7 @@ document.getElementById("submitBtn").addEventListener("click", () => {
         if(enchantments[chosenEnchant].includes(selectedItem) && selectedLevel === chosenLevel){
             msg.textContent = "Craftcha Passed! Thanks for playing, the window will close shortly.";
             msg.style.color = "green";
+            window.opener.postMessage({ type: "CRAFTCHA_PASS" }, "*");
             setTimeout(() => {
                     window.close();
                 }, 2000);
