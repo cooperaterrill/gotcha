@@ -1,5 +1,31 @@
 
         const textureLoader = new THREE.TextureLoader();
+        const groundGeo = new THREE.PlaneGeometry(50,50);
+        const grassTexture = makeTexture('grass_block_top.png');
+        grassTexture.wrapS = grassTexture.wrapT = THREE.RepeatWrapping;
+        grassTexture.repeat.set(25,25);
+        const groundMaterial = new THREE.MeshLambertMaterial({
+            map: grassTexture,
+            color: 0x7cbd6b
+        })
+        const ground = new THREE.Mesh(groundGeo, groundMaterial);
+        ground.rotation.x = -Math.PI / 2;
+        ground.position.y = -1.5;
+
+        const logtext = makeTexture('oak_log.png');
+        const log = new THREE.MeshLambertMaterial({
+            map: logtext
+        });
+        const stonetext = makeTexture('stone.png');
+        const stone = new THREE.MeshLambertMaterial({
+            map: stonetext
+        });
+        const dirttext = makeTexture('dirt.png');
+        const dirt = new THREE.MeshLambertMaterial({
+            map: dirttext
+        });
+        const block_ids = new Map([[0, "log"], [1, "stone"], [2, "dirt"]]);
+        const block_ids_to_mesh = new Map([[0, log], [1, stone], [2, dirt]]);
         function makeTexture(path) {
             const texture = textureLoader.load(`/textures/${path}`);
             texture.anisotropy = 1;
@@ -50,19 +76,3 @@
             block.position.set(x, y, z);
             return block;
         }
-        const groundGeo = new THREE.PlaneGeometry(50,50);
-        const grassTexture = textureLoader.makeTexture('grass_block_top.png');
-        const logtext = makeTexture('oak_log.png');
-        const log = new THREE.MeshLambertMaterial({
-            map: logtext
-        });
-        const stonetext = makeTexture('stone.png');
-        const stone = new THREE.MeshLambertMaterial({
-            map: stonetext
-        });
-        const dirttext = makeTexture('dirt.png');
-        const dirt = new THREE.MeshLambertMaterial({
-            map: dirttext
-        });
-        const block_ids = new Map([[0, "log"], [1, "stone"], [2, "dirt"]]);
-        const block_ids_to_mesh = new Map([[0, log], [1, stone], [2, dirt]]);
