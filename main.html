@@ -1,112 +1,96 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Verifying...</title>
-  <link rel="stylesheet" href="styles.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="static/crafting.js"></script>
-  <script src="static/blocks.js"></script>
-  <script src="static/block_break.js"></script>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Verifying...</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
- <script>
-const games = [
-  "craft",
-  "enchantment",
-  "static/blocks.html",
-  "arrange",
-  "pick"
-];
+    <script>
+      const games = ["craft", "enchantment", "blocks", "arrange", "pick"];
 
-let currentPopup = null;
-const captchaBtn = document.querySelector(".sqr-captcha");
+      let currentPopup = null;
+      const captchaBtn = document.querySelector(".sqr-captcha");
 
-function openCaptcha() {
-  if (currentPopup && !currentPopup.closed) {
-    currentPopup.focus();
-    return;
-  }
+      function openCaptcha() {
+        if (currentPopup && !currentPopup.closed) {
+          currentPopup.focus();
+          return;
+        }
 
-  const chosen = games[Math.floor(Math.random() * games.length)];
+        const chosen = games[Math.floor(Math.random() * games.length)];
 
-  currentPopup = window.open(
-    chosen,
-    "miniGame",
-    "width=600,height=600,resizable=no,scrollbars=no"
-  );
-}
+        currentPopup = window.open(
+          chosen,
+          "miniGame",
+          "width=600,height=600,resizable=no,scrollbars=no",
+        );
+      }
 
-// Listen to messages from popup
-window.addEventListener("message", (event) => {
-  if (!event.data || !event.data.type) return;
+      // Listen to messages from popup
+      window.addEventListener("message", (event) => {
+        if (!event.data || !event.data.type) return;
 
-  if (event.data.type === "CRAFTCHA_PASS") {
-    alert("Verification successful!");
+        if (event.data.type === "CRAFTCHA_PASS") {
+          alert("Verification successful!");
 
-    // Update button color immediately
-    captchaBtn.style.backgroundColor = "yellow";
+          // Update button color immediately
+          captchaBtn.style.backgroundColor = "yellow";
 
-    // Optional: close popup if still open
-    if (currentPopup && !currentPopup.closed) currentPopup.close();
-    currentPopup = null;
-  }
+          // Optional: close popup if still open
+          if (currentPopup && !currentPopup.closed) currentPopup.close();
+          currentPopup = null;
+        }
 
-  if (event.data.type === "CRAFTCHA_FAIL") {
-    alert("Try again!");
-    // Reroll popup
-    if (currentPopup && !currentPopup.closed) currentPopup.close();
-    currentPopup = null;
-    openCaptcha();
-  }
-});
-</script>
+        if (event.data.type === "CRAFTCHA_FAIL") {
+          alert("Try again!");
+          // Reroll popup
+          if (currentPopup && !currentPopup.closed) currentPopup.close();
+          currentPopup = null;
+          openCaptcha();
+        }
+      });
+    </script>
+  </head>
 
-</head>
+  <body class="body-loader">
+    <div class="page">
+      <div class="card">
+        <h1 class="title">Sign In</h1>
 
-<body class="body-loader">
-  
+        <form class="form">
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" type="email" required />
+          </div>
 
-  <div class="page">
-    <div class="card">
-      <h1 class="title">Sign In</h1>
+          <div class="field">
+            <label for="password">Password</label>
+            <input id="password" type="password" minlength="6" required />
+          </div>
 
-      <form class="form">
-        <div class="field">
-          <label for="email">Email</label>
-          <input id="email" type="email" required />
+          <button type="submit" class="btn">Sign In</button>
+        </form>
+
+        <p class="switch-text">
+          Don’t have an account?
+          <button type="button" class="link-btn">Sign Up</button>
+        </p>
+
+        <div class="captcha-container">
+          <button
+            type="button"
+            class="sqr-captcha"
+            onclick="openCaptcha()"
+          ></button>
+          <p>I hereby certify that I ain't no clanker.</p>
         </div>
-
-        <div class="field">
-          <label for="password">Password</label>
-          <input id="password" type="password" minlength="6" required />
-        </div>
-
-        <button type="submit" class="btn">Sign In</button>
-      </form>
-
-      <p class="switch-text">
-        Don’t have an account?
-        <button type="button" class="link-btn">Sign Up</button>
-      </p>
-
-      <div class="captcha-container">
-        <button
-          type="button"
-          class="sqr-captcha"
-          onclick="openCaptcha()"
-        ></button>
-        <p>I hereby certify that I ain't no clanker.</p>
       </div>
     </div>
-  </div>
 
-  <!-- ✅ CAPTCHA OVERLAY (TOP LEVEL) -->
-  <div id="captchaOverlay" class="captcha-overlay hidden">
-    <iframe
-      id="captchaFrame"
-      title="Craftcha"
-    ></iframe>
-  </div>
-
-</body>
+    <!-- ✅ CAPTCHA OVERLAY (TOP LEVEL) -->
+    <div id="captchaOverlay" class="captcha-overlay hidden">
+      <iframe id="captchaFrame" title="Craftcha"></iframe>
+    </div>
+  </body>
 </html>

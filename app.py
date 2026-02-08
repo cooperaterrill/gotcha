@@ -8,11 +8,11 @@ app = Flask(__name__)
 #this is where html stuff goes
 @app.route("/blocks")
 def blocks():
-    return send_from_directory(".", "static/blocks.html")
+    return send_from_directory(".", "blocks.html")
 
 @app.route("/bow")
 def bow():
-    return send_from_directory(".", "static/bow.html")
+    return send_from_directory(".", "bow.html")
 
 @app.route("/main")
 def main():
@@ -41,15 +41,15 @@ def styles():
 #this is where you make scripts available
 @app.route('/block_break.js')
 def block_breakJS():
-    return send_from_directory('.', './static/block_break.js')
+    return send_from_directory('.', 'block_break.js')
 
 @app.route('/blocks.js')
 def blocksJS():
-    return send_from_directory('.', './static/blocks.js')
+    return send_from_directory('.', 'blocks.js')
 
 @app.route("/bow.js")
 def bowJS():
-    return send_from_directory(".", "./static/bow.js")
+    return send_from_directory(".", "bow.js")
 
 @app.route('/textures/<path:filename>')
 def textures(filename):
