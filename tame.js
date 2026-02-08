@@ -70,6 +70,7 @@ window.addEventListener("click", (e) => {
           "position: absolute; top: 20px; left: 20px; color: white; font-size: 24px; font-family: Arial, sans-serif; pointer-events: none; color: green;";
         document.getElementById("overlay-text").textContent =
           "Craftcha Passed! Thanks for playing, the window will close shortly.";
+        window.opener.postMessage({ type: "CRAFTCHA_PASS" }, "*");
         setTimeout(() => {
           window.close();
         }, 2000);
