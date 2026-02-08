@@ -9,6 +9,9 @@ const camera = new THREE.PerspectiveCamera(
 );
 camera.position.set(0, 0, 4); // Position camera back from origin
 camera.lookAt(0, 0, 0); // Look at center
+const blocks = [];
+let objective = Math.random() % (block_ids_to_mesh.length - 1);
+let objective_count = 0;
 
 // Renderer setup
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -24,10 +27,6 @@ const directionalLight = new THREE.DirectionalLight(0xfffeee, 0.6);
 directionalLight.position.set(5, 10, 5);
 directionalLight.castShadow = true;
 scene.add(directionalLight);
-
-const blocks = [];
-let objective = Math.random() % (block_ids_to_mesh.length - 1);
-let objective_count = 0;
 
 for (let x = 0; x < 3; x++) {
   for (let y = 0; y < 3; y++) {
