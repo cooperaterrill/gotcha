@@ -2,8 +2,8 @@
     for (let x = 0; x < 3; x++) {
         for (let y = 0; y < 3; y++) {
             let idx = Math.floor(Math.random() * block_ids_to_mesh.size);
-            const material = block_ids_to_mesh.get(idx);
-            const block = createTextureBlock(material, (x - 1), (1 - y), 0);
+            const blockData = block_ids_to_mesh.get(idx);
+            const block = createTextureBlock(blockData.material, blockData.name, (x - 1), (1 - y), 0);
             blocks.push(block);
             scene.add(block);
             }
@@ -20,10 +20,7 @@
         const intersects = raycaster.intersectObjects(blocks);
         if (intersects.length > 0) {
             const block = intersects[0].object;
-            if (block.userData.color === 'red') {
-                scene.remove(block);
-                blocks.splice(blocks.indexOf(block), 1);
-            }
+            console.log(block.userData.block_id);
         }
     });
 

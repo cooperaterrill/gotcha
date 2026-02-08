@@ -10,21 +10,19 @@
         const ground = new THREE.Mesh(groundGeo, groundMaterial);
         ground.rotation.x = -Math.PI / 2;
         ground.position.y = -1.5;
-
         const logtext = makeTexture('oak_log.png');
         const log = new THREE.MeshLambertMaterial({
-            map: logtext
+            map: logtext,
         });
         const stonetext = makeTexture('stone.png');
         const stone = new THREE.MeshLambertMaterial({
-            map: stonetext
+            map: stonetext,
         });
         const dirttext = makeTexture('dirt.png');
         const dirt = new THREE.MeshLambertMaterial({
-            map: dirttext
+            map: dirttext,
         });
-        const block_ids = new Map([[0, "log"], [1, "stone"], [2, "dirt"]]);
-        const block_ids_to_mesh = new Map([[0, log], [1, stone], [2, dirt]]);
+    const block_ids_to_mesh = new Map([[0, {material: log, name: "log_block"}], [1, {material: stone, name: "stone_block"}], [2, {material: dirt, name: "dirt_block"}]]);
     // Scene setup
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x7EC0EE);
@@ -92,14 +90,16 @@
             block.userData.color = colorName;
             return block;
         }
-        function createTextureBlock(material, x, y, z) {
+        function createTextureBlock(material, block_type, x, y, z) {
             const geometry = new THREE.BoxGeometry(1, 1, 1);
             const block = new THREE.Mesh(geometry, material);
             const edges = new THREE.EdgesGeometry(geometry);
             const wireframe = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x000000 }));
             block.add(wireframe);
-            
             block.position.set(x, y, z);
+            block.userData = {
+                block_id: block_type
+            }
             return block;
         }
     
