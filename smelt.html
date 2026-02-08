@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Smelting</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #D1D0D1;
+            font-family: monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .furnace-container {
+            display: flex;
+            gap: 30px;
+            margin-top: 40px;
+            align-items: center;
+        }
+
+        .furnace-left {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .fire-icon {
+            width: 32px;
+            height: 32px;
+            image-rendering: pixelated;
+        }
+
+        .arrow-icon {
+            width: 48px;
+            height: 32px;
+            image-rendering: pixelated;
+        }
+
+        .slot {
+            width: 64px;
+            height: 64px;
+            background: #c6c6c6;
+            border: 3px solid #8b8b8b;
+            box-sizing: border-box;
+        }
+
+        .inventory {
+            display: grid;
+            grid-template-columns: repeat(8, 64px);
+            gap: 6px;
+            margin-top: 40px;
+        }
+
+        .slot img {
+            width: 100%;
+            height: 100%;
+            image-rendering: pixelated;
+        }
+
+        #message {
+            margin-top: 16px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1 id="title"></h1>
+
+    <div class="furnace-container">
+        <div class="furnace-left">
+            <div class="slot" id="inputSlot"></div>
+            <img class="fire-icon" id="fireIcon" src="static/crafting_assets/fire_off.png" alt="fire">
+            <div class="slot" id="fuelSlot"></div>
+        </div>
+        <img class="arrow-icon" id="arrowIcon" src="static/crafting_assets/arrow_empty.png" alt="arrow">
+        <div class="slot" id="outputSlot"></div>
+    </div>
+    <div id="message"></div>
+    <div class="inventory" id="inventory"></div>
+
+    <script>
+        const recipes = [
+            { input: "iron_ore.png", output: "iron.png", outputName: "Iron Ingot" },
+            { input: "sand_block.png", output: "glass.png", outputName: "Glass" },
+            { input: "raw_gold.png", output: "gold_ingot.png", outputName: "Gold Ingot" }
+        ];
+
+        const recipe = recipes[Math.floor(Math.random() * recipes.length)];
+        document.getElementById("title").textContent = "Smelt a " + recipe.outputName;
+
+        const distractorItems = [
+            "stick.png", "dirt.png", "bone.png", "bow.png",
+            "zombie.png", "diamond_sword.png", "iron_sword.png"
+        ];
+
+        // Build inventory: correct input, coal, other recipe inputs as distractors, random fillers
+        const invItems = [];
+        invItems.push(recipe.input);
+        invItems.push("coal.png");
+
+        // Add other recipe inputs as distractors
+        for (const r of recipes) {
+            if (r.input !== recipe.input) {
+                invItems.push(r.input);
+            }
+        }
+
+        // Fill remaining slots with random distractors
+        const shuffledDistractors = distractorItems.sort(() => Math.random() - 0.5);
+        while (invItems.length < 8) {
+            invItems.push(shuffledDistractors[invItems.length - 4]);
+        }
+
+        // Shuffle inventory
+        for (let i = invItems.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [invItems[i], invItems[j]] = [invItems[j], invItems[i]];
+        }
+
+        // Create inventory slots
+        const inventory = document.getElementById("inventory");
+        for (let i = 0; i < 8; i++) {
+            const slot = document.createElement("div");
+            slot.className = "slot";
+            inventory.appendChild(slot);
+
+            const img = document.createElement("img");
+            img.src = "static/crafting_assets/" + invItems[i];
+            img.draggable = true;
+            img.className = "item";
+            slot.appendChild(img);
+        }
+
+        // Drag and drop
+        let draggedItem = null;
+
+        document.addEventListener("dragstart", e => {
+            if (e.target.tagName === "IMG" && e.target.className === "item") {
+                draggedItem = e.target;
+            }
+        });
+
+        document.addEventListener("dragover", e => {
+            if (e.target.classList.contains("slot")) {
+                e.preventDefault();
+            }
+        });
+
+        document.addEventListener("drop", e => {
+            if (!e.target.classList.contains("slot")) return;
+            e.preventDefault();
+
+            // Only allow drops on inputSlot, fuelSlot, and inventory slots
+            const isInventorySlot = e.target.parentElement.id === "inventory";
+            const isFurnaceTarget = e.target.id === "inputSlot" || e.target.id === "fuelSlot";
+
+            if (!isFurnaceTarget && !isInventorySlot) return;
+
+            if (!e.target.querySelector("img")) {
+                e.target.appendChild(draggedItem);
+                checkFurnace();
+            }
+        });
+
+        // Click furnace slot to return item to inventory
+        document.getElementById("inputSlot").addEventListener("click", returnToInventory);
+        document.getElementById("fuelSlot").addEventListener("click", returnToInventory);
+
+        function returnToInventory(e) {
+            const slot = e.currentTarget;
+            const img = slot.querySelector("img");
+            if (!img) return;
+
+            // Find an empty inventory slot
+            const invSlots = document.getElementById("inventory").children;
+            for (const invSlot of invSlots) {
+                if (!invSlot.querySelector("img")) {
+                    invSlot.appendChild(img);
+                    return;
+                }
+            }
+        }
+
+        const inputSlot = document.getElementById("inputSlot");
+        const fuelSlot = document.getElementById("fuelSlot");
+        const outputSlot = document.getElementById("outputSlot");
+        const fireIcon = document.getElementById("fireIcon");
+        const arrowIcon = document.getElementById("arrowIcon");
+        const msg = document.getElementById("message");
+
+        let smelting = false;
+
+        function checkFurnace() {
+            if (smelting) return;
+
+            const inputImg = inputSlot.querySelector("img");
+            const fuelImg = fuelSlot.querySelector("img");
+
+            if (!inputImg || !fuelImg) return;
+
+            const inputFile = inputImg.src.split("/").pop();
+            const fuelFile = fuelImg.src.split("/").pop();
+
+            if (inputFile === recipe.input && fuelFile === "coal.png") {
+                startSmelting();
+            }
+        }
+
+        function startSmelting() {
+            smelting = true;
+
+            // Disable interaction on furnace slots
+            inputSlot.style.pointerEvents = "none";
+            fuelSlot.style.pointerEvents = "none";
+
+            // Fire on
+            fireIcon.src = "static/crafting_assets/fire_on.png";
+
+            // Arrow animation
+            arrowIcon.src = "static/crafting_assets/arrow_empty.png";
+
+            setTimeout(() => {
+                arrowIcon.src = "static/crafting_assets/arrow_half.png";
+            }, 1000);
+
+            setTimeout(() => {
+                arrowIcon.src = "static/crafting_assets/arrow_full.png";
+                completeSmelting();
+            }, 2000);
+        }
+
+        function completeSmelting() {
+            // Consume input and fuel
+            inputSlot.innerHTML = "";
+            fuelSlot.innerHTML = "";
+
+            // Show result in output
+            const resultImg = document.createElement("img");
+            resultImg.src = "static/crafting_assets/" + recipe.output;
+            resultImg.className = "item";
+            outputSlot.appendChild(resultImg);
+
+            // Success
+            msg.textContent = "Craftcha Passed! Thanks for playing, the window will close shortly.";
+            msg.style.color = "green";
+            window.opener.postMessage({ type: "CRAFTCHA_PASS" }, "*");
+
+            setTimeout(() => {
+                window.close();
+            }, 2000);
+        }
+    </script>
+
+</body>
+
+</html>

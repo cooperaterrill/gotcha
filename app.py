@@ -38,6 +38,10 @@ def pick():
 def arrange():
     return send_from_directory(".", "arrange.html")
 
+@app.route("/smelt")
+def smelt():
+    return send_from_directory(".", "smelt.html")
+
 @app.route("/tame")
 def tame():
     return send_from_directory(".", "tame.html")
