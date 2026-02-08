@@ -52,6 +52,7 @@ window.addEventListener("click", (e) => {
 
   const hits = raycaster.intersectObjects(scene.children, true);
 
+  console.log("click");
   for (const hit of hits) {
     if (hit.object.userData.isCollider) {
       if (hit.object === wolf1collider) {
@@ -63,9 +64,15 @@ window.addEventListener("click", (e) => {
 
       console.log("Clicked model:", hit.object.userData.model);
       if (wolf1Tamed && wolf2Tamed) {
+        document.getElementById("overlay-text").style = document.getElementById(
+          "overlay-text",
+        ).style =
+          "position: absolute; top: 20px; left: 20px; color: white; font-size: 24px; font-family: Arial, sans-serif; pointer-events: none; color: green;";
+        document.getElementById("overlay-text").textContent =
+          "Craftcha Passed! Thanks for playing, the window will close shortly.";
         setTimeout(() => {
           window.close();
-        }, 100);
+        }, 2000);
       }
       break;
     }
