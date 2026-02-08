@@ -60,6 +60,7 @@ export function createMaterials() {
     [6, {material: iron, name: "iron_ore_block"}],
     [7, {material: planks, name: "planks_block"}]
   ]);
+  return block_ids_to_mesh
 }
 
 export function createGround() {
